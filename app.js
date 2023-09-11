@@ -4,17 +4,26 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const { Server } = require("socket.io");
 const passport = require("passport");
 var session = require("express-session");
-
+const cors = require("cors");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var seriesRouter = require("./routes/series");
 var matchRouter = require("./routes/match");
 var teamsRouter = require("./routes/team");
 var playersRouter = require("./routes/player");
+const { createServer } = require("http");
 
 var app = express();
+
+var httpServer = createServer(app);
+var io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+  },
+});
 
 app.use(
   session({
@@ -36,7 +45,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
+app.use(cors())
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/series", seriesRouter);
@@ -44,9 +53,31 @@ app.use("/match", matchRouter);
 app.use('/teams', teamsRouter);
 app.use('/players', playersRouter);
 
+
+// creating the connection with socket.io
+io.on("connection", (socket) => {
+  console.log("A user connected");
+
+  // Handle custom events
+  socket.on("scoreUpdated", (newScores) => {
+    console.log("Received new scores:", newScores);
+    io.emit("scoreUpdated", newScores); // Broadcast the message to all connected clients
+  });
+
+  // Handle disconnection
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
+  });
+});
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
+});
+
+
+io.listen(3001, () => {
+  console.log('Socket.io server is running on port 3001');
 });
 
 // error handler

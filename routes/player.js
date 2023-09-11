@@ -5,7 +5,7 @@ const router = express.Router();
 
 /* GET users listing. */
 
-router.get("/", playerController.getPlayer);
+router.get("/:id", playerController.getPlayer);
 router.post("/addplayer", playerController.addPlayers);
 
 // Add the signup route

@@ -3,11 +3,11 @@ const matchSchema = new mongoose.Schema(
   {
     teamA: {
       type: mongoose.Schema.ObjectId,
-      ref: "team",
+      ref: "Team",
     },
     teamB: {
       type: mongoose.Schema.ObjectId,
-      ref: "team",
+      ref: "Team",
     },
     datetime: {
       type: Date,
@@ -16,6 +16,7 @@ const matchSchema = new mongoose.Schema(
     seriesId: {
       type: mongoose.Schema.ObjectId,
       ref: "series",
+      required: false,
     },
   },
   { timestamps: true }

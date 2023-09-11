@@ -1,9 +1,9 @@
-const { getThePlareqyer, addPlayer} = require("../services/player.service");
+const PlayerService= require("../services/player.service");
 
 class playerController {
   async getPlayer(req, res, next) {
     try {
-      const teams = await getThePlayer();
+      const teams = await PlayerService.getThePlayer(req.params.id);
       if (!teams) {
         return res.json({ message: "Something went wrong" });
       } else {
@@ -16,7 +16,7 @@ class playerController {
 
   async addPlayers(req, res, next) {
     try {
-      const players = await addPlayer(req);
+      const players = await PlayerService.addPlayer(req);
       console.log(players)
       if (!players) {
         res.header(`Content-Type`, `application/json`);

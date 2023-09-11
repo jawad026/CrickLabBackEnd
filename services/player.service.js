@@ -3,10 +3,10 @@
 const playerModel = require("../models/player.model");
 
 class PlayerService {
-  async getThePlayer(req, res, next) {
+  async getThePlayer(req) {
     try {
       // Call the logoutUser function from the AuthService
-      const getTeams = await playerModel.find();
+      const getTeams = await playerModel.find({ team: req });
       console.log(getTeams);
       return getTeams;
     } catch (error) {
